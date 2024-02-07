@@ -1,4 +1,5 @@
 from multiprocessing import Process, Queue, Value
+import os
 import random
 import time
 import traceback
@@ -19,7 +20,7 @@ def main():
 
     try:
         # 入力音がペンタトニックかチェックする(ブロッキング)
-        check_pentatocnic_note(queue, isFinish)
+        check_pentatonic_note(queue, isFinish)
     except KeyboardInterrupt:
         pass
     except Exception:
@@ -29,9 +30,10 @@ def main():
         isFinish.value = 1
         midi_process.join()
 
-def check_pentatocnic_note(queue, isFinish):
+def check_pentatonic_note(queue, isFinish):
 
     time.sleep(2) # pygameの出力までちょっと待つ
+    os.system('cls') # 画面をクリアする
     
     while(True):
         chord = Pentatonics.notes[random.randint(0,len(Pentatonics.notes)-1)]
@@ -42,17 +44,19 @@ def check_pentatocnic_note(queue, isFinish):
 
         # マイナー7thペンタ
         logger.info(f"=======================================")
-        logger.info(f"chord: {penta.chord}m")
-        logger.info(f"1st_deg: {deg}\n")
+        logger.info(f"chord: {penta.chord}m7")
+        logger.info(f"1st_note: {penta.minor7th_scale[penta.deg2idx(deg)]} (deg:{deg})\n")
         logger.info(f"minor_pente_scale: {penta.minor7th_scale}")
         logger.info(f"ascending_notes: {penta.minor7th_ascending_notes(deg)}")
         logger.info(f"descending_notes: {penta.minor7th_descending_notes(deg)}")
+        print("\n\x1b[0;32mnote:      ", end="")
 
         is_used_note = [False for _ in range(Pentatonics.penta_len)]
 
         while(not isFinish.value):
             note = queue.get()
-            logger.info(f"note: {note}")
+            space = "".join([" " for _ in range(5-len(note))])
+            print(f"\r\x1b[0;32mnote: \x1b[0m{note}{space}", end="")
 
             try:
                 penta_idx = penta.minor7th_scale.index(note)
@@ -62,6 +66,7 @@ def check_pentatocnic_note(queue, isFinish):
 
             # すべてのペンタトニックを鳴らしたら次のコードに進む
             if all(is_used_note):
+                os.system('cls') # 画面をクリアする
                 break
 
 if __name__ == "__main__":

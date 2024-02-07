@@ -15,7 +15,9 @@ def midi_process_func(in_key, hw_input_id, note_queue, isFinish):
     """ midi入力機器から入力されたノートをQueueに入れる """
     pygame.midi.init()
     midi_input = pygame.midi.Input(hw_input_id)
+    now_note = ""
 
+    # 移調用のオフセット
     offset = -1 * Pentatonics.notes.index(in_key)
 
     try:
@@ -27,8 +29,12 @@ def midi_process_func(in_key, hw_input_id, note_queue, isFinish):
                 midi_note = midi_events[0][0][1] + offset
 
                 if status == Const.NOTE_ON:
+                    now_note = pygame.midi.midi_to_ansi_note(midi_note%Const.TONE_NUM)[:-2]
+                    note_queue.put(now_note)
+                if status == Const.NOTE_OFF:
                     note = pygame.midi.midi_to_ansi_note(midi_note%Const.TONE_NUM)[:-2]
-                    note_queue.put(note)
+                    if now_note == note:
+                        note_queue.put("")
 
             pygame.time.wait(10)
 

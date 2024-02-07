@@ -22,6 +22,9 @@ class Pentatonics:
         idx = self.penta_deg.index(deg)
         return [self.minor7th_scale[idx%self.penta_len], self.minor7th_scale[(idx+4)%self.penta_len], self.minor7th_scale[(idx+3)%self.penta_len], self.minor7th_scale[(idx+2)%self.penta_len], self.minor7th_scale[(idx+1)%self.penta_len]]
 
+    def deg2idx(self, deg):
+        return self.penta_deg.index(deg)
+
     @property
     def minor7th_scale(self):
         idx = self.notes.index(self.chord)
