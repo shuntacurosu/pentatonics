@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 import shutil
 
@@ -57,7 +58,7 @@ def make():
     exec("git pull origin main",folder_env)
 
     # パッケージ一覧をエクスポート
-    cmd = f"pip freeze > requirements.txt"
+    cmd = f"{sys.base_prefix} -m pip freeze > requirements.txt"
     exec(cmd)
 
     # パッケージをインストール
