@@ -50,6 +50,9 @@ def make():
         exec(f"git remote add origin {git_url}",folder_env)
         exec("git fetch --all --prune",folder_env)
 
+        # batをコピー
+        shutil.copyfile(f"res\\execute.bat", f"{folder_root}\\{folder_root}.bat")
+
     # 最新のソースを持ってくる
     exec("git pull origin main",folder_env)
 
