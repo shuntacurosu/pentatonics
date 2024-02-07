@@ -2,6 +2,7 @@ import os
 import sys
 import subprocess
 import shutil
+import traceback
 
 from Logger import Logger
 logger = Logger(__name__, Logger.DEBUG)
@@ -58,7 +59,7 @@ def make():
     exec("git pull origin main",folder_env)
 
     # パッケージ一覧をエクスポート
-    cmd = f"{sys.base_prefix} -m pip freeze > requirements.txt"
+    cmd = f"{sys.exec_prefix}\\Scripts\\python.exe -m pip freeze > requirements.txt"
     exec(cmd)
 
     # パッケージをインストール
@@ -126,4 +127,4 @@ if __name__ == "__main__":
     try:
         make()
     except Exception as e:
-        logger.alert(e)
+        logger.error(traceback.format_exc())
